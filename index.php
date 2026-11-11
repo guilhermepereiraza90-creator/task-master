@@ -1,8 +1,7 @@
-
 <?php
-// Sistema de Autoloading Nativo (PSR-0 simplificado)
+// Autoload atualizado para incluir Presenter
 spl_autoload_register(function ($class) {
-    $dirs = ['Model', 'Controller', 'View'];
+    $dirs = ['Model', 'Presenter', 'View'];
     foreach ($dirs as $dir) {
         $file = __DIR__ . "/src/$dir/$class.php";
         if (file_exists($file)) {
@@ -11,17 +10,25 @@ spl_autoload_register(function ($class) {
     }
 });
 
-// 1. Conexão com o banco (Único lugar no sistema inteiro!)
+// Conexão com o banco SQLite
 $pdo = new PDO('sqlite:' . __DIR__ . '/tasks.sqlite');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// 2. Roteamento básico
-$controller = new TaskController($pdo);
-$action = $_GET['action'] ?? 'index'; // Se não vier action, usa 'index'
+// Instanciação das camadas do MVP
+$model = new Task($pdo);
+$view = new TaskHtmlView();
+$presenter = new TaskPresenter($model, $view);
 
-if (method_exists($controller, $action)) {
-    $controller->$action(); // Executa o método correspondente
+// Roteamento
+$action = $_GET['action'] ?? 'index';
+
+if ($action === 'create') {
+    $presenter->create($_POST['title'] ?? '', $_POST['description'] ?? '', $_POST['due_date'] ?? '', $_POST['assignee'] ?? '');
+} elseif ($action === 'complete') {
+    $presenter->complete($_GET['id'] ?? 0);
+} elseif ($action === 'delete') {
+    $presenter->delete($_GET['id'] ?? 0);
 } else {
-    echo "Página não encontrada 404";
+    $presenter->index();
 }
 ?>
