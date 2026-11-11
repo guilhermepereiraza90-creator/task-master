@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Master - MVVM Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="container">
+        <h1>Task Master (MVVM Edition)</h1>
+       
+        <div class="form-group">
+            <input type="text" id="taskTitle" placeholder="O que precisa ser feito? (Obrigatório)">
+            <textarea id="taskDescription" placeholder="Descrição da tarefa... (Opcional)"></textarea>
+            <div style="display: flex; gap: 10px;">
+                <input type="date" id="taskDueDate">
+                <input type="text" id="taskAssignee" placeholder="Quem vai fazer? (Obrigatório)">
+            </div>
+            <button id="addBtn">Adicionar</button>
+        </div>
+
+        <ul id="taskList"></ul>
+    </div>
+
+    <script src="js/TaskViewModel.js"></script>
+</body>
+</html>
